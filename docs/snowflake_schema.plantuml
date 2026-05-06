@@ -1,0 +1,196 @@
+@startuml
+hide circle
+skinparam linetype ortho
+skinparam classAttributeIconSize 0
+skinparam backgroundColor #FFFFFF
+
+entity "fact_sale" as fact_sale {
+  * sale_id : bigint <<PK>>
+  --
+  source_stage_id : bigint <<FK>>
+  source_sale_id : integer
+  sale_date_id : integer <<FK>>
+  customer_id : bigint <<FK>>
+  seller_id : bigint <<FK>>
+  store_id : bigint <<FK>>
+  product_id : bigint <<FK>>
+  pet_id : bigint <<FK>>
+  sale_quantity : integer
+  sale_total_price : numeric
+}
+
+entity "dim_date" as dim_date {
+  * date_id : integer <<PK>>
+  --
+  full_date : date
+  day_number : smallint
+  month_number : smallint
+  month_name : text
+  quarter_number : smallint
+  year_number : smallint
+  iso_day_of_week : smallint
+  day_name : text
+}
+
+entity "dim_customer" as dim_customer {
+  * customer_id : bigint <<PK>>
+  --
+  first_name : text
+  last_name : text
+  age : integer
+  email : text
+  country_id : bigint <<FK>>
+  postal_code : text
+}
+
+entity "dim_seller" as dim_seller {
+  * seller_id : bigint <<PK>>
+  --
+  first_name : text
+  last_name : text
+  email : text
+  country_id : bigint <<FK>>
+  postal_code : text
+}
+
+entity "dim_store" as dim_store {
+  * store_id : bigint <<PK>>
+  --
+  store_name : text
+  store_location : text
+  city_id : bigint <<FK>>
+  phone : text
+  email : text
+}
+
+entity "dim_supplier" as dim_supplier {
+  * supplier_id : bigint <<PK>>
+  --
+  supplier_name : text
+  contact_name : text
+  email : text
+  phone : text
+  address : text
+  city_id : bigint <<FK>>
+}
+
+entity "dim_product" as dim_product {
+  * product_id : bigint <<PK>>
+  --
+  product_natural_key : text
+  product_name : text
+  product_category_id : bigint <<FK>>
+  pet_category_id : bigint <<FK>>
+  supplier_id : bigint <<FK>>
+  brand_id : bigint <<FK>>
+  material_id : bigint <<FK>>
+  color_id : bigint <<FK>>
+  size_id : bigint <<FK>>
+  product_price : numeric
+  stock_quantity : integer
+  product_weight : numeric
+  product_description : text
+  product_rating : numeric
+  product_reviews : integer
+  release_date_id : integer <<FK>>
+  expiry_date_id : integer <<FK>>
+}
+
+entity "dim_pet" as dim_pet {
+  * pet_id : bigint <<PK>>
+  --
+  pet_name : text
+  pet_type_id : bigint <<FK>>
+  pet_breed_id : bigint <<FK>>
+  customer_id : bigint <<FK>>
+}
+
+entity "dim_country" as dim_country {
+  * country_id : bigint <<PK>>
+  --
+  country_name : text
+}
+
+entity "dim_city" as dim_city {
+  * city_id : bigint <<PK>>
+  --
+  city_name : text
+  state_name : text
+  country_id : bigint <<FK>>
+}
+
+entity "dim_product_category" as dim_product_category {
+  * product_category_id : bigint <<PK>>
+  --
+  category_name : text
+}
+
+entity "dim_pet_category" as dim_pet_category {
+  * pet_category_id : bigint <<PK>>
+  --
+  category_name : text
+}
+
+entity "dim_pet_type" as dim_pet_type {
+  * pet_type_id : bigint <<PK>>
+  --
+  pet_type_name : text
+}
+
+entity "dim_pet_breed" as dim_pet_breed {
+  * pet_breed_id : bigint <<PK>>
+  --
+  pet_breed_name : text
+}
+
+entity "dim_brand" as dim_brand {
+  * brand_id : bigint <<PK>>
+  --
+  brand_name : text
+}
+
+entity "dim_material" as dim_material {
+  * material_id : bigint <<PK>>
+  --
+  material_name : text
+}
+
+entity "dim_color" as dim_color {
+  * color_id : bigint <<PK>>
+  --
+  color_name : text
+}
+
+entity "dim_size" as dim_size {
+  * size_id : bigint <<PK>>
+  --
+  size_name : text
+}
+
+dim_date ||--o{ fact_sale
+dim_customer ||--o{ fact_sale
+dim_seller ||--o{ fact_sale
+dim_store ||--o{ fact_sale
+dim_product ||--o{ fact_sale
+dim_pet ||--o{ fact_sale
+
+dim_country ||--o{ dim_city
+dim_country ||--o{ dim_customer
+dim_country ||--o{ dim_seller
+dim_city ||--o{ dim_store
+dim_city ||--o{ dim_supplier
+
+dim_product_category ||--o{ dim_product
+dim_pet_category ||--o{ dim_product
+dim_supplier ||--o{ dim_product
+dim_brand ||--o{ dim_product
+dim_material ||--o{ dim_product
+dim_color ||--o{ dim_product
+dim_size ||--o{ dim_product
+dim_date ||--o{ dim_product : release
+dim_date ||--o{ dim_product : expiry
+
+dim_customer ||--o{ dim_pet
+dim_pet_type ||--o{ dim_pet
+dim_pet_breed ||--o{ dim_pet
+@enduml
